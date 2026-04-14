@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordly</title>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href = "index.css">
+</head>
+<body>
+    <h1><i><u>Wordly Dictionary</u></i></h1>
+    <main>
+        
+    <form id="search-form">
+        <input type="text" id="search" placeholder="Search for a word..." />
+        <button type="submit">Search</button>
+        <button class = "myclass">Add to Favorites</button>
+        <br>
+        <button class = "myclass" id="show-favorites">Show Favorites</button>
+    </form>
+
+    <div id="results"></div>
+
+    <p id="error" class="hidden"></p>
+
+    <audio id="audio"></audio>
+   
+    <ul id="fav-list"></ul>
+</main>
+</body>
+</html>
