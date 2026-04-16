@@ -8,24 +8,23 @@
     <link rel="stylesheet" href = "index.css">
 </head>
 <body>
-    <h1><i><u>Wordly Dictionary</u></i></h1>
-    <main>
-        
-    <form id="search-form">
-        <input type="text" id="search" placeholder="Search for a word..." />
-        <button type="submit">Search</button>
-        <button class = "myclass">Add to Favorites</button>
-        <br>
-        <button class = "myclass" id="show-favorites">Show Favorites</button>
-    </form>
-
-    <div id="results"></div>
-
-    <p id="error" class="hidden"></p>
-
-    <audio id="audio"></audio>
-   
-    <ul id="fav-list"></ul>
+    <h1>Wordly Dictionary</h1> 
+    <main> <div class="container"> 
+        <form id="search-form"> 
+            <label for="search">Search Word:</label> 
+            <input type="text" id="search" placeholder="Enter a word..." required /> 
+            <div class="buttons"> 
+                <button type="submit">Search</button> 
+                <button type="button" id="add-fav">Add to Favorites</button> 
+                <button type="button" id="show-favorites">Show Favorites</button> 
+            </div> 
+        </form> 
+    <div id="results"></div> 
+        <p id="error" class="hidden"></p> 
+        <h3>Favorites</h3> 
+        <ul id="fav-list"></ul> 
+        <audio id="audio"></audio> 
+    </div> 
 </main>
 </body>
 </html>

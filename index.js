@@ -1,86 +1,110 @@
-const form = document.getElementById('search-form');
-const input = document.getElementById('search');
-const result = document.getElementById('results');
-const error = document.getElementById('error');
-const audio = document.getElementById('audio');
-const favList = document.getElementById('fav-list');
+const form = document.getElementById("search-form");
+const input = document.getElementById("search");
+const results = document.getElementById("results");
+const error = document.getElementById("error");
+const audio = document.getElementById("audio");
 
-// let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+const addFavBtn = document.getElementById("add-fav");
+const showFavBtn = document.getElementById("show-favorites");
+const favList = document.getElementById("fav-list");
 
-// document.getElementById('show-favorites').addEventListener('click', () => {
-//     favList.innerHTML = favorites.map(fav => `<li>${fav}</li>`).join('');
-//     favList.classList.remove('hidden');
-// });
+let currentWord = "";
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const searchTerm = input.value.trim();
 
-    if (!searchTerm) return;
 
-    fetchWord(searchTerm);
+
+
+// ------Fetch word-------
+form.addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const word = input.value.trim();
+if (!word) return;
+
+currentWord = word;
+results.innerHTML = "Loading...";
+error.classList.add("hidden");
+
+try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+    const data = await res.json();
+
+    if (!res.ok) throw new Error("Word not found");
+
+    displayResult(data[0]);
+} catch (err) {
+    results.innerHTML = "";
+    error.textContent = err.message;
+    error.classList.remove("hidden");
+}
+
 });
 
-async function fetchWord(searchTerm) {
-    error.classList.add('hidden');
-    result.classList.add('hidden');
 
-    try {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${searchTerm}`);
 
-        if (!response.ok) {
-            throw new Error('Word not found');
-        }
 
-        const data = await response.json();
-        displayResult(data[0]);
 
-    } catch (err) {
-        showError(err.message);
-    }
-}
-
+// -------Display result-------
 function displayResult(data) {
-    const { word, phonetic, meanings } = data;
-    const audioSrc = data.phonetics.find(p => p.audio)?.audio || '';
+const meaning = data.meanings[0].definitions[0].definition;
+const phonetic = data.phonetic || "";
 
-    result.innerHTML = `
-        <h2>${word}</h2>
-        <p>${phonetic || ''}</p>
-        <button id="play-audio">🔊 Play Pronunciation</button>
+results.innerHTML = `
+    <h2>${data.word}</h2>
+    <p><strong>Phonetic:</strong> ${phonetic}</p>
+    <p><strong>Meaning:</strong> ${meaning}</p>
+    <button id="play-audio">🔊 Play Audio</button>
+`;
 
-        <div>
-            ${meanings.map(m => `
-                <div>
-                    <h3>${m.partOfSpeech}</h3>
-                    <ul>
-                        ${m.definitions.map(d => `<li>${d.definition}</li>`).join('')}
-                    </ul>
-                </div>
-            `).join('')}
-        </div>
-    `;
 
-    const playButton = document.getElementById('play-audio');
 
-    playButton.addEventListener('click', () => {
-        if (audioSrc) {
-            audio.src = audioSrc;
-            audio.play();
-        } else {
-            alert('Audio not available for this word.');
-        }
-    });
 
-    result.classList.remove('hidden');
+
+// -------Audio-------
+const audioSrc = data.phonetics.find(p => p.audio)?.audio;
+if (audioSrc) {
+    audio.src = audioSrc;
+
+    document.getElementById("play-audio").onclick = () => {
+        audio.play();
+    };
+}
+
 }
 
 
 
 
 
+// -------Add to favorites-------
+addFavBtn.addEventListener("click", () => {
+if (!currentWord) return;
 
-function showError(message) {
-    error.textContent = message;
-    error.classList.remove('hidden');
+let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+
+if (!favs.includes(currentWord)) {
+    favs.push(currentWord);
+    localStorage.setItem("favorites", JSON.stringify(favs));
+    alert("Added to favorites!");
 }
+
+});
+
+
+
+
+
+
+// -------Show favorites-------
+showFavBtn.addEventListener("click", () => {
+favList.innerHTML = "";
+
+let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+
+favs.forEach(word => {
+    const li = document.createElement("li");
+    li.textContent = word;
+    favList.appendChild(li);
+});
+
+});
